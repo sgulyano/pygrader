@@ -1,0 +1,25 @@
+<!-- templates/index.html-->
+{% extends 'base.html' %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+{% if user.is_authenticated %}
+  Hi {{ user.username }}!
+
+  {% if latest_problem_list %}
+      <ul>
+      {% for problem in latest_problem_list %}
+          <li><a href="{% url 'webgrader:problem' problem.id %}">{{ problem.problem_title }}</a></li>
+      {% endfor %}
+      </ul>
+  {% else %}
+      <p>No questions are available.</p>
+  {% endif %}
+
+  <p><a href="{% url 'logout' %}">logout</a></p>
+{% else %}
+  <p>You are not logged in</p>
+  <a href="{% url 'login' %}">login</a>
+{% endif %}
+{% endblock %}
