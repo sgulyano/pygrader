@@ -11,7 +11,7 @@ import numpy as np
 import resource
 import os
 
-print("CPU limit of child (pid %d)" % os.getpid(), resource.getrlimit(resource.RLIMIT_CPU))
+#print("CPU limit of child (pid %d)" % os.getpid(), resource.getrlimit(resource.RLIMIT_CPU))
 
 n = int(input())
 num = input()

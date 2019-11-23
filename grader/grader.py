@@ -3,7 +3,7 @@ import sys
 import resource
 import subprocess
 import signal
-
+import argparse
 
 def setlimits():
     # Set maximum CPU time to 1 second in child process, after fork() but before exec()
@@ -19,9 +19,36 @@ def main():
     print("CPU limit of parent (pid %d) after child finished executing" % os.getpid(), resource.getrlimit(resource.RLIMIT_CPU))
     print(p)
 
+if __name__ == '__main__':
+    #python grader.py -s problems/stone_pile/stone_pile.py -i problems/stone_pile/input -o problems/stone_pile/output -cpu 2 -mem 32
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-s' 		,'--src'			,type=str   , required=True	    ,help='Path to source code')
+    parser.add_argument('-i' 		,'--input'			,type=str   , required=True	    ,help='Input directory')
+    parser.add_argument('-o'		,'--output'         ,type=str   , required=True	    ,help='Output directory (or ground truth)')
+    parser.add_argument('-t'		,'--temp'		    ,type=str   , default='./'		,help='Temporary directory for storing user output (default = ./)')
+    parser.add_argument('-cpu'		,'--cpu-time-limit'	,type=int   , default=1	        ,help='CPU Time limit (default = 1)')
+    parser.add_argument('-mem'		,'--memory-limit'	,type=int   , default=16		,help='Memory limit in MB (default = 16MB)')
+    args = parser.parse_args()
+    print(args)
 
+    assert(os.path.isfile(args.src))
+    assert(os.path.isdir(args.input))
+    assert(os.path.isdir(args.output))
+    assert(os.path.isdir(args.temp))
+    assert(isinstance(args.cpu_time_limit, int))
+    assert(isinstance(args.memory_limit, int))
 
-
+    file_list = []
+    num_test = 0
+    while True:
+        input_file = os.path.join(args.input, f"{num_test+1}.in")
+        output_file = os.path.join(args.output, f"{num_test+1}.out")
+        num_test += 1
+        if not os.path.isfile(input_file) or not os.path.isfile(output_file):
+            break
+        file_list.append((input_file, output_file))
+    print(file_list)
+    
 #os.killpg(os.getpgid(p.pid), signal.SIGTERM)  # Send the signal to all the process groups
 ##!/usr/bin/env python3
 ## -*- coding: utf-8 -*-
