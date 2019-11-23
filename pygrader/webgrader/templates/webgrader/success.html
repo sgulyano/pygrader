@@ -1,19 +1,21 @@
-<!-- templates/index.html-->
-{% extends 'base.html' %}
+<!-- templates/webgrader/success.html-->
+{% extends 'home.html' %}
+
+{% load static %}
 
 {% block title %}Submitted Successfully{% endblock %}
 
 {% block content %}
 {% if user.is_authenticated %}
-  Hi {{ user.username }}!
-
+<div class="main-content" style="margin-top: 50px;">
   <h1>Submitted Successfully</h1>
-  
-  <a href="{% url 'webgrader:index' %}">Back to problem list</a>
 
-  <p><a href="{% url 'logout' %}">logout</a></p>
+  <p style="text-align: center;">
+    <a href="{% url 'webgrader:index' %}">Back to problem list</a>
+  </p>
+</div>
 {% else %}
-  <p>You are not logged in</p>
-  <a href="{% url 'login' %}">login</a>
+<p>You are not logged in</p>
+<a href="{% url 'login' %}">login</a>
 {% endif %}
 {% endblock %}

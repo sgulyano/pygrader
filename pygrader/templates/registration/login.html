@@ -1,13 +1,26 @@
 <!-- templates/registration/login.html -->
 {% extends 'base.html' %}
 
-{% block title %}Login{% endblock %}
+{% load static %}
+
+{% block head_css %}
+<link rel="stylesheet" type="text/css" href="{% static 'webgrader/login_style.css' %}">
+{% endblock %}
+
+{% block title %}DSI200 Grader{% endblock %}
 
 {% block content %}
-<h2>Login</h2>
-<form method="post">
-  {% csrf_token %}
-  {{ form.as_p }}
-  <button type="submit">Login</button>
-</form>
+<div class="wrapper container">
+    <div id="formContent">
+  <h2>DSI200 Python Grader</h2>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary" style="width: 30%;">Login</button>
+  </form>
+  <div id="formFooter">
+      <a class="underlineHover" href="{% url 'password_reset' %}">Forgot Password?</a>
+  </div>
+</div>
+</div>
 {% endblock %}

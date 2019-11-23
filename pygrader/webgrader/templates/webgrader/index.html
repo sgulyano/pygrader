@@ -1,25 +1,72 @@
-<!-- templates/index.html-->
+<!-- templates/webgrader/index.html-->
 {% extends 'base.html' %}
+
+{% load static %}
+
+{% block head_css %}
+<link rel="stylesheet" type="text/css" href="{% static 'webgrader/index_style.css' %}">
+{% endblock %}
 
 {% block title %}Home{% endblock %}
 
 {% block content %}
 {% if user.is_authenticated %}
-  Hi {{ user.username }}!
-
-  {% if latest_problem_list %}
-      <ul>
-      {% for problem in latest_problem_list %}
-          <li><a href="{% url 'webgrader:problem' problem.id %}">{{ problem.problem_title }}</a></li>
-      {% endfor %}
+<!-- https://bootsnipp.com/snippets/7nAMP -->
+<!-- https://www.w3schools.com/bootstrap/bootstrap_theme_me.asp -->
+<!-- Navigation -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+  <div class="container">
+    <a class="navbar-brand" href="#">DSI200 Python Grader</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive"
+      aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        <li class="nav-item active">
+          <a class="nav-link" href="#">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link">  Hi {{ user.username }}! </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'logout' %}">Logout</a>
+        </li>
       </ul>
-  {% else %}
-      <p>No questions are available.</p>
-  {% endif %}
+    </div>
+  </div>
+</nav>
 
-  <p><a href="{% url 'logout' %}">logout</a></p>
+<section class="py-5 text-center">
+    <div class="container" style='padding-top: 40px;'>
+
+
+<table style="width:100%" class="table table-bordered table-hover table-light">
+    <thead class="thead-dark">
+  <tr>
+    <th>ID</th>
+    <th>Problem</th>
+    <th>Score</th>
+    <th>Uploaded At</th>
+  </tr>
+</thead>
+  {% if my_problem_list %}
+  {% for i in my_problem_list %}
+  <tr>
+    <td> {{ i.pb.id }} </td>
+    <td> <a href="{% url 'webgrader:problem' i.pb.id %}">{{ i.pb.problem_title }}</a> </td>
+    <td> {{ i.sm.score |default:"0" }} / {{ i.pb.max_score }} </td>
+    <td> {{ i.sm.uploaded_at }} </td>
+  </tr>
+  {% endfor %}
+  {% endif %}
+</table>
+
 {% else %}
-  <p>You are not logged in</p>
-  <a href="{% url 'login' %}">login</a>
+<p>You are not logged in</p>
+<a href="{% url 'login' %}">login</a>
 {% endif %}
+</div>
+</section>
+
 {% endblock %}

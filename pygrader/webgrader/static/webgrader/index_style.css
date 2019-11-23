@@ -1,0 +1,27 @@
+/* navbar */
+.navbar {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    border: 0;
+    border-radius: 0;
+    margin-bottom: 0;
+    font-size: 12px;
+    letter-spacing: 5px;
+  }
+  
+  .navbar-nav li a:hover {
+    color: #1abc9c !important;
+  }
+
+  .bg-1 {
+    background-color: #1abc9c; /* Green */
+    color: #ffffff;
+  }
+
+.main-content {
+    padding: 40px 20px 20px 20px;
+}
+
+h1 {
+    text-align: center;
+}

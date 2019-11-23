@@ -1,6 +1,8 @@
 from django.db import models
 from django.conf import settings
 
+from ckeditor.fields import RichTextField
+
 class Problem(models.Model):
     VISIBLE = 1
     INVISIBLE = 0
@@ -10,8 +12,10 @@ class Problem(models.Model):
     ]
 
     problem_title = models.CharField('Problem Title', max_length=200)
-    problem_desc = models.TextField('Problem Description')
+    problem_desc = RichTextField(config_name='Problem Description')
     pub_date = models.DateTimeField('Date Published')
+    max_score = models.IntegerField(default=100)
+    num_test = models.IntegerField(default=10)
     visibility = models.IntegerField(default=1, choices=VISIBILITY_CHOICES)
 
     def __str__(self):
@@ -24,7 +28,7 @@ def user_directory_path(instance, filename):
 class Submission(models.Model):
     problem = models.ForeignKey(Problem, null=True, on_delete=models.CASCADE)
     author = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, on_delete=models.CASCADE)
-    src_code = models.FileField(upload_to=user_directory_path)
+    src_code = models.FileField('Source Code', upload_to=user_directory_path)
     uploaded_at = models.DateTimeField('Date Submitted', auto_now_add=True)
     score = models.IntegerField(default=0)
 

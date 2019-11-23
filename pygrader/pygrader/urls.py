@@ -21,3 +21,7 @@ urlpatterns = [
     path('', include('webgrader.urls')),
     # follow this tutorial https://wsvincent.com/django-user-authentication-tutorial-login-and-logout/
     path('accounts/', include('django.contrib.auth.urls')), ]
+
+admin.site.site_header = 'DSI200 Python Grader Admin Panel'
+admin.site.site_title = 'DSI200 Python Grader Admin'
+admin.site.index_title = "Welcome to DSI200 Python Grader Admin Portal"
