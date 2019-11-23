@@ -1,0 +1,19 @@
+<!-- templates/index.html-->
+{% extends 'base.html' %}
+
+{% block title %}Submitted Successfully{% endblock %}
+
+{% block content %}
+{% if user.is_authenticated %}
+  Hi {{ user.username }}!
+
+  <h1>Submitted Successfully</h1>
+  
+  <a href="{% url 'webgrader:index' %}">Back to problem list</a>
+
+  <p><a href="{% url 'logout' %}">logout</a></p>
+{% else %}
+  <p>You are not logged in</p>
+  <a href="{% url 'login' %}">login</a>
+{% endif %}
+{% endblock %}
