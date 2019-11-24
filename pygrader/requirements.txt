@@ -1,3 +1,5 @@
 Django==2.2.5
 django-ckeditor==5.8.0
-django-mptt==0.10.0
+celery==4.3.0
+redis==3.3.11
+
