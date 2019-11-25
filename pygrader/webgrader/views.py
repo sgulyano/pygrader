@@ -3,20 +3,13 @@ from django.contrib.auth.decorators import login_required
 
 from .models import Problem, Submission
 from .forms import SubmissionForm
-
-import grader
+from .tasks import grading
 
 from django.db.models import Count, Min
 from django.db.models import Q
 
 @login_required
 def index(request):
-    #aa = Problem.objects.values('problem_title', 'submission__uploaded_at').annotate(c = Count('submission'))#.order_by('-submission__uploaded_at')[:1]
-    #print(aa)
-    #bb = Submission.objects.annotate(max_date=Max('student__score__date'))
-    #                       .filter(date=F('max_date'))
-
-    #cc = Submission.objects.values('problem__problem_title', 'author').annotate(pb_count = Count('problem__id'))#.order_by('-uploaded_at')[:1]
     latest_problem_list = Problem.objects.order_by('-pub_date')
     my_problem_list = []
     
@@ -41,21 +34,17 @@ def problem(request, problem_id):
 @login_required
 def submit(request, problem_id):
     problem = get_object_or_404(Problem, pk=problem_id)
-    print(request.user)
     if request.method == 'POST':
         form = SubmissionForm(request.POST, request.FILES, initial={'author': request.user})
         if form.is_valid():
             form = form.save(commit=False)
             form.author = request.user
             form.problem = problem
-            ##TODO: make grader to score the code
-
             form.save()
-            print(form.src_code)
+            
+            ## invoke grader to score the code
+            grading.delay(form.pk, problem_id)
 
-            # return `MEDIA_URL` + `upload_to` + absolute path of file.
-            # eg; `/media/documents/filename.csv`
-            print(form.src_code.url)
             return redirect('webgrader:success', problem_id=problem_id)
         else:
             print('invalid form')

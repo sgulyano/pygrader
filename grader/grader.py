@@ -34,8 +34,8 @@ def run_all_tests(args):
     file_list = []
     num_test = 0
     while True:
-        input_file = os.path.join(args.input, f"{num_test+1}.in")
-        output_file = os.path.join(args.output, f"{num_test+1}.out")
+        input_file = os.path.join(args['input'], f"{num_test+1}.in")
+        output_file = os.path.join(args['output'], f"{num_test+1}.out")
         num_test += 1
         if not os.path.isfile(input_file) or not os.path.isfile(output_file):
             break
@@ -44,9 +44,9 @@ def run_all_tests(args):
     # run user program on each test
     all_results = ''
     print("\tTesting set: %s" % os.path.dirname(file_list[0][0]))
-    print('\tRunning %s, \t [CPU=%ds, MEM=%dMB]' % (args.src, args.cpu_time_limit, args.memory_limit) )
+    print('\tRunning %s, \t [CPU=%ds, MEM=%dMB]' % (args['src'], args['cpu_time_limit'], args['memory_limit']) )
     for inp, out in file_list:
-        results = testing(args.src, inp, out, args.temp, args.cpu_time_limit, args.memory_limit)
+        results = testing(args['src'], inp, out, args['temp'], args['cpu_time_limit'], args['memory_limit'])
         if results == 1:
             print("\t\t%s \tcorrect" % os.path.basename(inp))
             all_results += 'C'
@@ -63,6 +63,11 @@ def run_all_tests(args):
             print("\t\t%s \tunknown" % os.path.basename(inp))
             all_results += 'E'
     return all_results
+
+def get_score(result, max_score):
+    ratio = sum([x == 'C' for x in result]) / float(len(result))
+    return int(max_score * ratio)
+
 
 if __name__ == '__main__':
     #python grader.py -s problems/stone_pile/stone_pile.py -i problems/stone_pile/input -o problems/stone_pile/output -cpu 2 -mem 32
@@ -82,5 +87,9 @@ if __name__ == '__main__':
     assert(isinstance(args.cpu_time_limit, int))
     assert(isinstance(args.memory_limit, int))
     
+    args = vars(args)
+    
     all_results = run_all_tests(args)
     print(all_results)
+
+    print(get_score(all_results, 100))

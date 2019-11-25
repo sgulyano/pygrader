@@ -12,6 +12,8 @@ app = Celery('pygrader')
 app.config_from_object('django.conf:settings')
 app.autodiscover_tasks(lambda: settings.INSTALLED_APPS)
 
+import sys
+sys.path.append(os.path.join(os.path.dirname(settings.BASE_DIR), 'grader'))
 
 @app.task(bind=True)
 def debug_task(self):
