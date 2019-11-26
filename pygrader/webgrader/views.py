@@ -43,7 +43,7 @@ def submit(request, problem_id):
             form.save()
             
             ## invoke grader to score the code
-            grading.delay(form.pk, problem_id)
+            grading.delay(form.pk)
 
             return redirect('webgrader:success', problem_id=problem_id)
         else:

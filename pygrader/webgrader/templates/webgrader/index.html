@@ -38,7 +38,7 @@
 </nav>
 
 <section class="py-5 text-center">
-    <div class="container" style='padding-top: 40px;'>
+    <div class="container" style='padding-top: 60px;'>
 
 
 <table style="width:100%" class="table table-bordered table-hover table-light">
@@ -47,7 +47,8 @@
     <th>ID</th>
     <th>Problem</th>
     <th>Score</th>
-    <th>Uploaded At</th>
+    <th>Result</th>
+    <th>Uploaded</th>
   </tr>
 </thead>
   {% if my_problem_list %}
@@ -56,6 +57,7 @@
     <td> {{ i.pb.id }} </td>
     <td> <a href="{% url 'webgrader:problem' i.pb.id %}">{{ i.pb.problem_title }}</a> </td>
     <td> {{ i.sm.score |default:"0" }} / {{ i.pb.max_score }} </td>
+    <td> {{ i.sm.result |default:"grading"}} </td>
     <td> {{ i.sm.uploaded_at }} </td>
   </tr>
   {% endfor %}
