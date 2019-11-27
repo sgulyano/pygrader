@@ -45,7 +45,7 @@ def testing(src, inp, out, cpu, mem):
     elif res == MEM_LIMIT:
         status = 3
     else:
-        result = subprocess.run(['less', temp.name], stdout=subprocess.PIPE)
+        result = subprocess.run(['cat', temp.name], stdout=subprocess.PIPE)
         print(result.stdout.decode())
         status = 4
     temp.close()
@@ -63,6 +63,10 @@ def run_all_tests(args):
             break
         file_list.append((input_file, output_file))
     
+    if not file_list:
+        print("ERROR: No test found")
+        return ""
+
     # run user program on each test
     all_results = ''
     print("\tTesting set: %s" % os.path.dirname(file_list[0][0]))

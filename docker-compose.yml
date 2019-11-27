@@ -1,0 +1,37 @@
+version: '3'
+
+services:
+  # db:
+  #   image: postgres:9.6.5
+  #   volumes:
+  #     - postgres_data:/var/lib/postgresql/data/
+  redis:
+    image: "redis:alpine"
+    ports:
+      - "6379:6379"
+  web:
+    build:
+      context: .
+      dockerfile: pygrader/Dockerfile
+    command: python /code/pygrader/manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/code
+    ports:
+      - "8000:8000"
+    depends_on:
+      - redis
+    #   - db
+  celery:
+    build:
+      context: .
+      dockerfile: pygrader/Dockerfile
+    command: sh -c "cd pygrader && celery -A pygrader worker -l info"
+    volumes:
+      - .:/code
+    depends_on:
+      - redis
+  #    - db
+
+
+# volumes:
+#   postgres_data:

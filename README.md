@@ -2,9 +2,16 @@
 Simple Python Grader based on Django
 
 ## Production Workflow
-`Django` serves the web application. `Celery`, an open source asynchronous task queue, has workers that concurrently performs the grading. They fetches the task (submission) from the message queue to grade. The message queue is provided by `redis`. The `PostgreSQL` database stores the set of `problems` and `submissions`, where `Adminer` is a database management tool. The configuration will be wrapped in the `docker` so the grader can be up and running by typing:
+`Django` serves the web application. `Celery`, an open source asynchronous task queue, has workers that concurrently performs the grading. They fetches the task (submission) from the message queue to grade. The message queue is provided by `redis`. The `PostgreSQL` database stores the set of `problems` and `submissions`, where `Adminer` is a database management tool. To deploy `Django`, `Gunicorn` is used as a WSGI HTTP server. It is best to use `Gunicorn` behind an HTTP proxy server, `nginx`.
+
+The configuration will be wrapped in the `docker` so the grader can be up and running by typing:
 ```
-docker-compose up
+docker-compose -f docker-compose.prod.yml up -d --build
+```
+
+To stop the docker, type
+```
+docker-compose down -v
 ```
 
 ## Development Workflow

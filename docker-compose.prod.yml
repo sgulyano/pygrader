@@ -1,0 +1,49 @@
+version: '3'
+
+services:
+  # db:
+  #   image: postgres:9.6.5
+  #   volumes:
+  #     - postgres_data:/var/lib/postgresql/data/
+  redis:
+    image: "redis:alpine"
+    ports:
+      - "6379:6379"
+  web:
+    build:
+      context: .
+      dockerfile: pygrader/Dockerfile
+    command: sh -c "cd pygrader && gunicorn pygrader.wsgi:application --bind 0.0.0.0:8000"
+    volumes:
+      - .:/code
+      - static_volume:/code/pygrader/staticfiles
+      - media_volume:/code/pygrader/media
+    expose:
+      - 8000
+    depends_on:
+      - redis
+    #   - db
+  celery:
+    build:
+      context: .
+      dockerfile: pygrader/Dockerfile
+    command: sh -c "cd pygrader && celery -A pygrader worker -l info"
+    volumes:
+      - .:/code
+    depends_on:
+      - redis
+  #    - db
+  nginx:
+    build: ./nginx
+    volumes:
+      - static_volume:/code/pygrader/staticfiles
+      - media_volume:/code/pygrader/media
+    ports:
+      - 1337:80
+    depends_on:
+      - web
+
+volumes:
+  static_volume:
+  media_volume:
+#   postgres_data:
