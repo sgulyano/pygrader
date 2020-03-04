@@ -11,7 +11,6 @@ import tempfile
 
 RUN_COMPLETE = 0
 TIME_LIMIT = -24
-MEM_LIMIT = 3
 
 
 def testing(src, inp, out, cpu, mem):
@@ -26,14 +25,14 @@ def testing(src, inp, out, cpu, mem):
     def setlimits():
         # Set maximum CPU time to 1 second in child process, after fork() but before exec()
         resource.setrlimit(resource.RLIMIT_CPU, (cpu, cpu*2))
+        resource.setrlimit(resource.RLIMIT_DATA, (mem * 1024*1024, mem * 1024*1024*2))
     
     temp = tempfile.NamedTemporaryFile(mode="wb")
-    # tmp_file = tmp + ''.join([str(random.randint(0, 9)) for i in range(10)])
-
+    
     p = subprocess.Popen(["python", src], preexec_fn=setlimits, stdin=open(inp), stdout=temp, stderr=subprocess.STDOUT)
     
     res = p.wait()
-    
+
     if res == RUN_COMPLETE:
         result = subprocess.run(['diff', '-BEZb', temp.name, out], stdout=subprocess.PIPE)
         if not result.stdout:
@@ -42,12 +41,14 @@ def testing(src, inp, out, cpu, mem):
             status = 0
     elif res == TIME_LIMIT:
         status = 2
-    elif res == MEM_LIMIT:
-        status = 3
     else:
         result = subprocess.run(['cat', temp.name], stdout=subprocess.PIPE)
-        print(result.stdout.decode())
-        status = 4
+        if str.encode('MemoryError') in result.stdout:
+            # memory error
+            status = 3
+        else:
+            print(result.stdout.decode())
+            status = 4
     temp.close()
     return status
 
@@ -96,13 +97,13 @@ def get_score(result, max_score):
 
 
 if __name__ == '__main__':
-    #python grader.py -s problems/stone_pile/stone_pile.py -i problems/stone_pile/input -o problems/stone_pile/output -cpu 2 -mem 32
+    #python grader.py -s problems/stone_pile/stone_pile.py -i problems/stone_pile/input -o problems/stone_pile/output -cpu 2 -mem 1024
     parser = argparse.ArgumentParser()
     parser.add_argument('-s' 		,'--src'			,type=str   , required=True	    ,help='Path to source code')
     parser.add_argument('-i' 		,'--input'			,type=str   , required=True	    ,help='Input directory')
     parser.add_argument('-o'		,'--output'         ,type=str   , required=True	    ,help='Output directory (or ground truth)')
-    parser.add_argument('-cpu'		,'--cpu-time-limit'	,type=int   , default=1	        ,help='CPU Time limit (default = 1)')
-    parser.add_argument('-mem'		,'--memory-limit'	,type=int   , default=16		,help='Memory limit in MB (default = 16MB)')
+    parser.add_argument('-cpu'		,'--cpu-time-limit'	,type=int   , default=2	        ,help='CPU Time limit (default = 1)')
+    parser.add_argument('-mem'		,'--memory-limit'	,type=int   , default=1024		,help='Memory limit in MB (default = 16MB)')
     args = parser.parse_args()
 
     assert(os.path.isfile(args.src))
