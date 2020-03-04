@@ -6,7 +6,7 @@ from .models import Problem, Submission
 @admin.register(Problem)
 class ProblemAdmin(admin.ModelAdmin):
     date_hierarchy = 'pub_date'
-    list_display = ('id', 'problem_title', 'pub_date', 'max_score', 'num_test', 'visibility')
+    list_display = ('id', 'problem_title', 'pub_date', 'max_score', 'testcases', 'visibility')
 
 @admin.register(Submission)
 class SubmissionAdmin(admin.ModelAdmin):

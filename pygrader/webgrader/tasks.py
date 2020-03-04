@@ -13,10 +13,11 @@ def grading(sub_pk):
     
     sub = Submission.objects.get(pk=sub_pk)
     src = os.path.join(settings.MEDIA_ROOT, sub.src_code.path)
-    
+    testcase_folder, _ = os.path.splitext(sub.problem.testcases.path)
+
     args = {'src': src, 
-            'input': os.path.join(sub.problem.directory, 'input'), 
-            'output': os.path.join(sub.problem.directory, 'output'), 
+            'input': os.path.join(testcase_folder, 'input'), 
+            'output': os.path.join(testcase_folder, 'output'), 
             'cpu_time_limit': sub.problem.cpu_limit, 
             'memory_limit': sub.problem.mem_limit}
     
